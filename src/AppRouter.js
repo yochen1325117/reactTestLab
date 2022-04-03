@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 
 import App from './App';
-import NumberTestGame from	'./NumberTestGame';
+import NumberTestGame from	'./pages/NumberTestGame';
 
 const AppRouter = () => {
   let routes = useRoutes([
