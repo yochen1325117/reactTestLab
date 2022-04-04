@@ -6,12 +6,33 @@
         align-items: center;
         justify-content: space-around;
         margin: 20px auto;
+        .MagicBlock {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            border: 3px solid blueviolet;
+            border-radius: 14px;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
     }
-    .MagicBlock {
-        width: 50px;
-        height: 50px;
-        display: flex;
-        border: 1px solid blueviolet;
-        border-radius: 14px;
+    .question-symbol-list-block, .question-number-list-block {
+        display: block;
+        text-align: center;
+        .MagicBlock {
+            width: 50px;
+            height: 50px;
+            display: inline-flex;
+            border: 2px solid yellowgreen;
+            border-radius: 14px;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px;
+            cursor: pointer;
+        }
     }
 }
