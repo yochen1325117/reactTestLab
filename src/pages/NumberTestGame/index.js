@@ -51,6 +51,29 @@ const setQuestion = () => {
     return checkQuestion.split("")
 }
 
+const setNumberList = () => {
+    const list = [];
+    for (let i = 1; i< 10;i++) {
+        list.push({
+            status: '',
+            context: i
+        })
+    }
+    return list;
+}
+
+const setSymbolList = () => {
+    const questionSymbolList = [ '+', '-', 'x', '/', '=' ]
+    const list = [];
+    questionSymbolList.map(symbol => {
+        list.push({
+            status: '',
+            context: symbol
+        })
+    })
+    return list;
+}
+
 
 
 
@@ -62,8 +85,8 @@ function NumberTestGame() {
     const answerChooseArray = setOneAnswerList(answerChoose);
     const defaultAnswerTimeList = setDefaultAnswerList(answerChooseArray, answerTime);
     const [answerTimeList, setAnswerTimeList] = useState(defaultAnswerTimeList);
-    const questionNumberList = [1,2,3,4,5,6,7,8,9];
-    const questionSymbolList = [ '+', '-', 'x', '/', '=' ]
+    const questionNumberList = setNumberList();
+    const questionSymbolList = setSymbolList();
 
     useEffect(() => {
         const questionList = setQuestion();
@@ -202,14 +225,14 @@ function NumberTestGame() {
             <div className="question-number-list-block">
             {
                 questionNumberList.map(number => (
-                    <MagicBlock key={`block_${number}`} context={number} disable={false} blockStyle={styleObject[number.status] || {}} clickFunction={() => { addAnswerClick(number); }}/>
+                    <MagicBlock key={`block_${number.context}`} context={number.context} disable={false} blockStyle={styleObject[number.status] || {}} clickFunction={() => { addAnswerClick(number.context); }}/>
                 ))
             }
             </div>
             <div className="question-symbol-list-block">
             {
                 questionSymbolList.map(symbol => (
-                    <MagicBlock key={`block_${symbol}`} context={symbol} disable={false} blockStyle={styleObject[symbol.status] || {}} clickFunction={() => { addAnswerClick(symbol); }}/>
+                    <MagicBlock key={`block_${symbol.context}`} context={symbol.context} disable={false} blockStyle={styleObject[symbol.status] || {}} clickFunction={() => { addAnswerClick(symbol.context); }}/>
                 ))
             }
             </div>
