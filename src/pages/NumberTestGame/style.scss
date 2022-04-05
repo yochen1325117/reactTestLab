@@ -40,6 +40,9 @@
         align-items: center;
         justify-content: center;
         margin: 20px 0;
+        @media (max-width: 675px) {
+            margin: 10px 0;
+        }
         .delete-button {
             border: 2px solid #333;
             border-radius: 6px;
@@ -58,6 +61,30 @@
             margin: 0 20px;
             cursor: pointer;
 
+        }
+    }
+    .role-block {
+        .role-text {
+            margin: 5px 0;
+        }
+        .role-color-block{
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            margin: 10px 0;
+            @media (max-width: 675px) {
+                display: inline-flex;
+            }
+            .role-color {
+                width: 20px;
+                height: 20px;
+                border-radius: 20px;
+                display: inline-block;
+                margin-right: 10px;
+                @media (max-width: 675px) {
+                    margin: 5px;
+                }
+            }
         }
     }
 }

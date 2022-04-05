@@ -243,11 +243,9 @@ function NumberTestGame() {
 
     const styleObject = {
         'wrong-side': {
-            border: '2px solid #33FFF9',
             backgroundColor: '#deb3cf',
         },
         check: {
-            border: '2px solid black',
             backgroundColor: '#C0C0C0',
         },
         correct: {
@@ -291,6 +289,19 @@ function NumberTestGame() {
                     <MagicBlock key={`block_${symbol.context}`} context={symbol.context} disable={false} blockStyle={styleObject[symbol.status] || {}} clickFunction={() => { addAnswerClick(symbol.context); }}/>
                 ))
             }
+            </div>
+            <div className="role-block">
+                <p className="role-text">猜數學四則運算式 e.g. 11+11=22</p>
+                <p className="role-text">每格對應一個數字或是符號</p>
+                <div className="role-color-block">
+                    <div className="role-color" style={styleObject.correct} />為正確
+                </div>
+                <div className="role-color-block">
+                    <div className="role-color" style={styleObject["wrong-side"]} />錯誤位置
+                </div>
+                <div className="role-color-block">
+                    <div className="role-color" style={styleObject.check} />錯誤
+                </div>
             </div>
             <div className="button-block">
                 <button className="delete-button" onClick={deleteAnswer}>--</button>
