@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   BrowserRouter as Router,
   Routes,
@@ -16,11 +16,16 @@ const AppRouter = () => {
   ]);
   return routes;
 };
+export const ThemeContext = React.createContext() 
 
 const AppWrapper = () => {
+  const [modal, setModal] = useState({ show: false, context: '' });
+
   return (
     <Router>
-      <AppRouter />
+      <ThemeContext.Provider value={{ modalData: modal, setModal }}>
+        <AppRouter />
+      </ThemeContext.Provider >
     </Router>
   );
 };

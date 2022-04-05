@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { ThemeContext } from '../../AppRouter';
 
 import * as _ from 'lodash';
 import randomMathQuestion from 'random-math-question';
 import MagicBlock from '../../components/MagicBlock';
+import SetimeModal from '../../components/SetimeModal';
 import './style.scss'
 
 
@@ -40,7 +42,6 @@ const setQuestion = () => {
         amountOfNumber: "2-3",
         operations: ["/", "*", "+", "-"],
     });
-    console.log('question', question);
     const questionParser = `${question.question}`.split(" ").join("");
         const answerParser = `${question.answer}`.split(" ").join("");
         if (answerParser > 0) {
@@ -48,6 +49,7 @@ const setQuestion = () => {
         }
         questionChecker =checkQuestion.length === 8 && questReg.test(checkQuestion);
     }
+    console.log('question', checkQuestion);
     return checkQuestion.split("")
 }
 
@@ -75,8 +77,6 @@ const setSymbolList = () => {
 }
 
 
-
-
 function NumberTestGame() {
     const answerChoose = 8;
     const answerTime = 6;
@@ -85,8 +85,10 @@ function NumberTestGame() {
     const answerChooseArray = setOneAnswerList(answerChoose);
     const defaultAnswerTimeList = setDefaultAnswerList(answerChooseArray, answerTime);
     const [answerTimeList, setAnswerTimeList] = useState(defaultAnswerTimeList);
-    const questionNumberList = setNumberList();
-    const questionSymbolList = setSymbolList();
+    const [questionNumberList, setQuestionNumberList] = useState(setNumberList());
+    const [questionSymbolList, setQuestionSymbolList] = useState(setSymbolList());
+    const contextType = useContext(ThemeContext);
+
 
     useEffect(() => {
         const questionList = setQuestion();
@@ -100,7 +102,6 @@ function NumberTestGame() {
         };
     }, [answerTimeList, answerNow])
 
-
     const addAnswerClick = (answer) => {
         if (answerNow < answerTime) {
             let answerNowList = _.cloneDeep(answerTimeList[answerNow]);
@@ -108,7 +109,6 @@ function NumberTestGame() {
             if(checkAnswerList.length < answerChoose) {
                 answerNowList[checkAnswerList.length] = { status: '', context: answer }
                 answerTimeList[answerNow] = answerNowList;
-                console.log('answerTimeList', answerTimeList);
                 setAnswerTimeList([...answerTimeList]);
             }
         }
@@ -124,24 +124,55 @@ function NumberTestGame() {
             const evalList = Function('return (' + submitSplitList[0] + ')')();
             const equalList = submitSplitList[1];
             const googAnswer = +evalList === +equalList;
+            let correctAnswer = 0;
             if (googAnswer) {
                 const questionChecker = _.cloneDeep(question);
+                // 先檢查正確答案
                 answerNowList = answerNowList.map((answer, index) => {
-                    const questionIndex = questionChecker.indexOf(`${answer.context}`)
-                    if (questionIndex > -1 && questionIndex === index) {
+                    // const questionIndex = questionChecker.indexOf(`${answer.context}`)
+                    const numberFilter = questionNumberList.filter(number => `${number.context}` === `${answer.context}`);
+                    const symbolFilter = questionSymbolList.filter(symbol => symbol.context === answer.context);
+                    if (`${answer.context}` === questionChecker[index]) {
                         answer.status = 'correct'
-                        questionChecker[questionIndex] = '';
+                        questionChecker[index] = '';
+                        correctAnswer++;
+                        if (numberFilter && numberFilter[0] && numberFilter.status !== 'correct') {
+                            numberFilter[0].status = 'correct';
+                        }
+                        if (symbolFilter && symbolFilter[0] && symbolFilter.status !== 'correct') {
+                            symbolFilter[0].status = 'correct';
+                        }
                     };
+                    
                     return answer;
                 });
+
+                // 再檢查錯位，錯誤答案
                 answerNowList = answerNowList.map((answer, index) => {
+
                     const questionIndex = questionChecker.indexOf(`${answer.context}`)
+                    const numberFilter = questionNumberList.filter(number => `${number.context}` === `${answer.context}`);
+                    const symbolFilter = questionSymbolList.filter(symbol => symbol.context === answer.context);
+
                     if (answer.status === '') {
-                        answer.status = 'check'
                         if (questionIndex > -1) {
                             answer.status = 'wrong-side'
                             questionChecker[questionIndex] = '';
-                        };
+                            if (numberFilter && numberFilter[0] && numberFilter.status !== 'correct') {
+                                numberFilter[0].status = 'wrong-side';
+                            }
+                            if (symbolFilter && symbolFilter[0] && symbolFilter.status !== 'correct') {
+                                symbolFilter[0].status = 'wrong-side';
+                            }
+                        } else {
+                            answer.status = 'check'
+                            if (numberFilter && numberFilter[0] && numberFilter.status !== 'correct') {
+                                numberFilter[0].status = 'check';
+                            }
+                            if (symbolFilter && symbolFilter[0] && symbolFilter.status !== 'correct') {
+                                symbolFilter[0].status = 'check';
+                            }
+                        }
                     }
                     return answer;
                 });
@@ -149,6 +180,14 @@ function NumberTestGame() {
                 answerTimeList[answerNow] = answerNowList
                 setAnswerTimeList([...answerTimeList]);
                 setAnswerNow(answerNow + 1);
+                setQuestionNumberList(questionNumberList);
+                setQuestionSymbolList(questionSymbolList);
+                if (correctAnswer === 8) {
+                    setAnswerNow(99);
+                    showModal('恭喜成功解答，重整可以再換題目喔')
+                }
+            } else {
+                showModal('罰你國小重讀')
             }
         }
     }
@@ -193,7 +232,14 @@ function NumberTestGame() {
           default:
             break;
         }
-      }
+    }
+
+    const showModal = (context) => {
+        contextType.setModal({ show: true, context })
+        setTimeout(() => {
+            contextType.setModal({ show: false, context: '' })
+        }, 800)
+    }
 
     const styleObject = {
         'wrong-side': {
@@ -209,10 +255,20 @@ function NumberTestGame() {
         }
     }
 
-
     return (
         <div className="NumberTestGame">
-            <p>第 { answerNow + 1 } 次嘗試 / 共可嘗試 { answerTime } 次</p>
+            {
+                answerNow < 99 && answerNow !== 6 &&
+                <p>第 { answerNow + 1 } 次嘗試 / 共可嘗試 { answerTime } 次</p>
+            }
+            {
+                answerNow === 99 &&
+                <p>恭喜成功</p>
+            }
+            {
+                answerNow === 6 &&
+                <p>真可惜，答案是 {question.join('')} </p>
+            }
             {
                 answerTimeList && answerTimeList.map((onTimeList, index) => (
                     <div key={`time_${index}`} className="question-block">
@@ -236,10 +292,11 @@ function NumberTestGame() {
                 ))
             }
             </div>
-            <div>
-                <button onClick={deleteAnswer}>--</button>
-                <button onClick={sendAnswer}>送出</button>
+            <div className="button-block">
+                <button className="delete-button" onClick={deleteAnswer}>--</button>
+                <button className="submit-button" onClick={sendAnswer}>送出</button>
             </div>
+            <SetimeModal context='' />
         </div>
     );
 }
