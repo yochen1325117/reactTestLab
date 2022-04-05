@@ -24,6 +24,9 @@ const AppWrapper = () => {
   return (
     <Router>
       <ThemeContext.Provider value={{ modalData: modal, setModal }}>
+        <a href="/">App</a>
+        <br />
+        <a href='/NumberTestGame'>number-test-game</a>
         <AppRouter />
       </ThemeContext.Provider >
     </Router>
