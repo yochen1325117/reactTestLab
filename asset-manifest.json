@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/reactTestLab/static/css/main.9e5766e4.css",
-    "main.js": "/reactTestLab/static/js/main.9d0356bc.js",
+    "main.js": "/reactTestLab/static/js/main.afe88986.js",
     "index.html": "/reactTestLab/index.html",
     "main.9e5766e4.css.map": "/reactTestLab/static/css/main.9e5766e4.css.map",
-    "main.9d0356bc.js.map": "/reactTestLab/static/js/main.9d0356bc.js.map"
+    "main.afe88986.js.map": "/reactTestLab/static/js/main.afe88986.js.map"
   },
   "entrypoints": [
     "static/css/main.9e5766e4.css",
-    "static/js/main.9d0356bc.js"
+    "static/js/main.afe88986.js"
   ]
 }
