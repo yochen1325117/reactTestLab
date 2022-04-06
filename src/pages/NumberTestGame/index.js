@@ -55,7 +55,7 @@ const setQuestion = () => {
 
 const setNumberList = () => {
     const list = [];
-    for (let i = 1; i< 10;i++) {
+    for (let i = 0; i< 10;i++) {
         list.push({
             status: '',
             context: i
